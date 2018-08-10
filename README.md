@@ -41,3 +41,25 @@ Examples:
 ![Example results](auto_calibrate.png)
 
 (Note to self: don't look so bored next time! :smile:)
+
+### Usage of the resulting pickle file
+
+To use the resulting lens parameters, that have been saved to the calibration file
+
+```python
+import pickle
+camera_params = pickle.load(open('filename', "rb"))
+
+# camera_params will be a dict with keys: mtx, dist, newcameramtx,
+# mean_accuracy which you will feed to the cv2 functions
+
+def flatten(img, params):
+    h, w = img.shape[:2]
+    newcameramtx, roi = cv2.getOptimalNewCameraMatrix(params['mtx'], params['dist'], (w, h), 1, (w, h))
+    return cv2.undistort(img, params['mtx'], params['dist'], None, newcameramtx)
+
+orig = cv2.imread('myimage.jpg')
+flattened = flatten(orig, camera_params)
+
+```
+
