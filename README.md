@@ -1,6 +1,15 @@
 # robovision
-Vision processing scripts
 
+Vision processing scripts useful for FIRST robotics teams and probably other purposes.
+
+License: MIT
+
+Author: Tim Poulsen, mentor for Team 1518 Raider Robotics
+
+## Scripts
+
+* auto_calibrate.py - camera calibration utility, uses the OpenCV chessboard technique to determine lens parameters to be used for dewarping operations
+* imagetools.py - a class implementing a set of image adjustment and correction functions
 
 ## auto_calibrate.py &mdash; Camera calibration utility
 
@@ -44,7 +53,9 @@ Examples:
 
 ### Usage of the resulting pickle file
 
-To use the resulting lens parameters, that have been saved to the calibration file
+The imagetools.py class offers a `flatten()` method that will undistort an image taken with the same camera.
+
+That class implements basically the following code:
 
 ```python
 import pickle
@@ -62,4 +73,26 @@ orig = cv2.imread('myimage.jpg')
 flattened = flatten(orig, camera_params)
 
 ```
+
+## Image tools class
+
+Image adjustment and manipulation tools
+
+Example use:
+
+```
+from imagetools import *
+
+image_tools = ImageTools('camera_params.pickle')
+image = cv2.imread('bot_picture.jpg')
+flattened = image_tools.flatten(image)
+```
+
+Class/instance functions:
+
+* `flatten()` - correct lens distortions in an image
+* `equalize_lab()` - image equalization (contrast enhancement)
+* `equalize_yuv()` - image equalization (contrast enhancement)
+* `adjust_contrast()` - contrast/brightness adjustment
+* `detect_edges()` - perform edge detection on an image
 
