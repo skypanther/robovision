@@ -8,4 +8,6 @@ from .utils import detect_edges
 from .utils import load_camera_params
 from .utils import flatten
 
+from .video import VideoStream
+
 from .preprocessor import Preprocessor

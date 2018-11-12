@@ -6,12 +6,12 @@ import abc
 
 class AbstractCam(object, metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def open(self):
-        raise NotImplementedError('You must define an open method')
+    def start(self):
+        raise NotImplementedError('You must define a start method')
 
     @abc.abstractmethod
-    def close(self):
-        raise NotImplementedError('You must define a close method')
+    def stop(self):
+        raise NotImplementedError('You must define a stop method')
 
     @abc.abstractmethod
     def read_frame(self):

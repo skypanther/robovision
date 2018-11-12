@@ -10,7 +10,6 @@ from abstract_cam import AbstractCam
 
 class Jetsoncam(AbstractCam):
     def __init__(self, resolution=(1920, 1080)):
-        self.resolution = resolution
         self.running = False
         self.current_frame = None
         w, h = resolution
