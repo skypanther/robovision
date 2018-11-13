@@ -9,13 +9,13 @@ from abstract_cam import AbstractCam
 
 
 class IPcam(AbstractCam):
-    def __init__(self, cam_id=''):
-        self.cam_id = cam_id
+    def __init__(self, ipcam_url=''):
+        self.ipcam_url = ipcam_url
         self.running = False
         self.current_frame = None
 
     def start(self):
-        self.cam = cv2.VideoCapture(self.cam_id)
+        self.cam = cv2.VideoCapture(self.ipcam_url)
         self.ct = threading.Thread(target=self._capture_image_thread, name="IPcam")
         self.ct.daemon = True
         self.running = True
