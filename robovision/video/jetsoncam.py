@@ -5,7 +5,7 @@ Instead, use the video.py library.
 import cv2
 import threading
 import time
-from abstract_cam import AbstractCam
+from .abstract_cam import AbstractCam
 
 
 class Jetsoncam(AbstractCam):

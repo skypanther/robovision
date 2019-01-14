@@ -1,31 +1,34 @@
-import argparse
 import cv2
 import numpy as np
+import os
+import sys
 from sklearn.cluster import KMeans
+
+# If you've `git cloned` the repo and are running the examples locally
+# you'll need the next line so that Python can find the robovision library
+# Otherwise, comment out the sys.path... line
+sys.path.append(os.path.dirname(os.path.realpath('.')))
+import robovision as rv  # noqa: E402
 
 coords = []
 drawing = False
 
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--image", help="Path to the image")
-    args = vars(ap.parse_args())
-    # load the image specified at the command line or capture
-    # an image from the built-in webcam
-    image_source = args["image"] if args["image"] else 0
-    image = get_image(image_source)
-    if image is not None:
-        cv2.namedWindow('CapturedImage', cv2.WINDOW_NORMAL)
-        cv2.imshow('CapturedImage', image)
-        cv2.setMouseCallback('CapturedImage', click_and_crop, image)
-        while True:
-            # wait for Esc or q key and then exit
-            key = cv2.waitKey(1) & 0xFF
-            if key == 27 or key == ord("q"):
-                print('Colors measured at coordinates: {}'.format(coords))
-                cv2.destroyAllWindows()
-                break
+    vs = rv.VideoStream(source="ipcam", ipcam_url="http://192.168.1.19/mjpg/video.mjpg")
+    vs.start()
+    cv2.namedWindow('CapturedImage', cv2.WINDOW_NORMAL)
+    while True:
+        frame = vs.read_frame()
+        cv2.imshow('CapturedImage', frame)
+        cv2.setMouseCallback('CapturedImage', click_and_crop, frame)
+        # wait for Esc or q key and then exit
+        key = cv2.waitKey(1) & 0xFF
+        if key == 27 or key == ord("q"):
+            print('Colors measured at coordinates: {}'.format(coords))
+            cv2.destroyAllWindows()
+            vs.stop()
+            break
 
 
 def get_image(source):

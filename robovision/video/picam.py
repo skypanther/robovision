@@ -3,7 +3,7 @@ Raspberry Pi camera library. Generally, don't access this library directly.
 Instead, use the video.py library.
 """
 import threading
-from abstract_cam import AbstractCam
+from .abstract_cam import AbstractCam
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 
