@@ -1,7 +1,12 @@
+"""
+Get the HSV colors of a region you select from a live image
+"""
+import argparse
 import cv2
 import numpy as np
 import os
 import sys
+import textwrap
 from sklearn.cluster import KMeans
 
 # If you've `git cloned` the repo and are running the examples locally
@@ -15,7 +20,37 @@ drawing = False
 
 
 def main():
-    vs = rv.VideoStream(source="ipcam", ipcam_url="http://192.168.1.19/mjpg/video.mjpg")
+    ap = argparse.ArgumentParser(epilog=textwrap.dedent('''\
+        Get the 5 most common colors of the area you select in the preview
+
+        The source param can be any of the following:
+        Integer       - Webcam with 0 typically the built-in webcam
+        'picam'       - Raspberry Pi camera
+        'http://...'  - URL to an IP cam, e.g. http://192.168.1.19/mjpg/video.mjpg
+
+        Examples:
+        python3 get_colors.py -s 0
+        python3 get_colors.py -s picam
+        python3 get_colors.py -s http://192.168.1.19/mjpg/video.mjpg
+        '''),
+        formatter_class=argparse.RawDescriptionHelpFormatter
+        )  # noqa: E124
+    ap.add_argument("-s", "--source", required=False,
+                    help="Video source, e.g. the webcam number")
+    args = vars(ap.parse_args())
+    source = args["source"]
+    vs = None
+    try:
+        webcam = int(source)
+        vs = rv.VideoStream(source="webcam", cam_id=webcam)
+    except ValueError:
+        if source == "picam":
+            vs = rv.VideoStream(source="picam")
+        else:
+            vs = rv.VideoStream(source="ipcam", ipcam_url=source)
+    if source is None:
+        print("Invalid source")
+        exit()
     vs.start()
     cv2.namedWindow('CapturedImage', cv2.WINDOW_NORMAL)
     while True:
@@ -29,22 +64,6 @@ def main():
             cv2.destroyAllWindows()
             vs.stop()
             break
-
-
-def get_image(source):
-    """
-    Get an image from the given source, either from a file or webcam
-    """
-    image = None
-    if isinstance(source, int):
-        cam = cv2.VideoCapture(source)
-        image_captured, image = cam.read()
-        cam.release()
-        if image_captured is False:
-            return None
-    else:
-        image = cv2.imread(source, cv2.IMREAD_COLOR)
-    return image
 
 
 def click_and_crop(event, x, y, flag, image):
