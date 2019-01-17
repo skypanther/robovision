@@ -125,9 +125,9 @@ def click_and_crop(event, x, y, flag, image):
                 hsv_values = []
                 for index, rows in enumerate(combined):
                     bar, rgb, hsv = make_bar(100, 100, rows[1])
-                    print(f'Bar {index + 1}')
-                    print(f'  RGB values: {rgb}')
-                    print(f'  HSV values: {hsv}')
+                    print('Bar {}'.format(index + 1))
+                    print('  RGB values: {}'.format(rgb))
+                    print('  HSV values: {}'.format(hsv))
                     hsv_values.append(hsv)
                     bars.append(bar)
 
@@ -136,7 +136,7 @@ def click_and_crop(event, x, y, flag, image):
                 sorted_bar_indexes = sort_hsvs(hsv_values)
                 sorted_bars = [bars[idx] for idx in sorted_bar_indexes]
                 cv2.imshow('Sorted by HSV values', np.hstack(sorted_bars))
-                cv2.imshow(f'{num_clusters} Most Common Colors', np.hstack(bars))
+                cv2.imshow('{} Most Common Colors'.format(num_clusters), np.hstack(bars))
 
 
 def make_histogram(cluster):

@@ -114,9 +114,9 @@ def take_photo(source, dirname, image_num, total):
     global cam
     image_captured, image = cam.read()
     if (image_captured):
-        fname = os.path.join(dirname, f'image_{image_num}') + '.jpg'
+        fname = os.path.join(dirname, 'image_{}'.format(image_num)) + '.jpg'
         cv2.imwrite(fname, image)
-        print(f'Captured image {image_num} of {total}')
+        print('Captured image {} of {}'.format(image_num, total))
 
 
 def get_output_dir(dirname, skip_image_capture):
@@ -149,7 +149,7 @@ def get_calibration_imageset(dirname, num_images):
     :@param num_images: Num images to select
     :return: List of tuples of (image, corners)
     """
-    images = glob.glob(f'{dirname}/*.jpg')
+    images = glob.glob('{}/*.jpg'.format(dirname))
     selected_images = []
     iteration = 0
     max_iterations = num_images * 4
@@ -236,7 +236,7 @@ def calibrate(dirname, min_images, preview):
         total_error += error
 
     mean_accuracy = 100 - (100 * (total_error / len(objpoints)))
-    print(f'Mean accuracy: {mean_accuracy}')
+    print('Mean accuracy: {}'.format(mean_accuracy))
 
     # Save the params for future re-use
     camera_params = Object()
@@ -249,7 +249,7 @@ def calibrate(dirname, min_images, preview):
     param_file_name = os.path.join(dirname, 'params.pickle')
     with open(param_file_name, 'wb') as param_file:
         pickle.dump(camera_params, param_file)
-        print(f'Camera params saved to {param_file_name}')
+        print('Camera params saved to {}'.format(param_file_name))
 
 
 if __name__ == '__main__':

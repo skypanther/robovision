@@ -22,9 +22,9 @@ distance = 36
 
 def main():
     global fov
-    ap = argparse.ArgumentParser(epilog=textwrap.dedent('''\
+    ap = argparse.ArgumentParser(epilog=textwrap.dedent("""\
         Determine the camera's apparent field of view. 
-        
+
         The input param can be any of the following:
         Integer       - Webcam with 0 typically the built-in webcam
         'picam'       - Raspberry Pi camera
@@ -34,7 +34,7 @@ def main():
         python3 get_apparent_fov.py -s 0
         python3 get_apparent_fov.py -s picam
         python3 get_apparent_fov.py -s http://192.168.1.19/mjpg/video.mjpg
-        '''),
+        """),
         formatter_class=argparse.RawDescriptionHelpFormatter
         )  # noqa: E124
     ap.add_argument("-s", "--source", required=False,
@@ -65,8 +65,8 @@ def main():
     cv2.namedWindow('CapturedImage', cv2.WINDOW_NORMAL)
     while True:
         frame = vs.read_frame()
-        cv2.imshow('CapturedImage', frame)
-        cv2.setMouseCallback('CapturedImage', click_handler, frame)
+        cv2.imshow("CapturedImage", frame)
+        cv2.setMouseCallback("CapturedImage", click_handler, frame)
         # wait for Esc or q key and then exit
         key = cv2.waitKey(1) & 0xFF
         if key == 27 or key == ord("q"):
@@ -91,7 +91,7 @@ def click_handler(event, x, y, _, image):
             rightpoint = (x, y)
             clone = image.copy()
             cv2.line(clone, leftpoint, rightpoint, (0, 255, 0), 2)
-            cv2.imshow('Measured distance', clone)
+            cv2.imshow("Measured distance", clone)
             do_calculations()
 
 
