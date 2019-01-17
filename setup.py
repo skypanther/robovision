@@ -24,7 +24,7 @@ setup(
         'Programming Language :: Python :: 3',
     ],
     keywords=['robot', 'first robotics', 'frc', 'computer vision', 'image processing', 'opencv'],
-    packages=['robovision', 'robovision.preprocessor'],
+    packages=['robovision'],
     include_package_data=True,
     author='Tim Poulsen',
     author_email='tim@skypanther.com'
