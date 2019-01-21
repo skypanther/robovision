@@ -30,14 +30,14 @@ Installation / Usage
 
 The best way to install this is with ``pip``:
 
-.. code-block:: shell
+.. code-block::
 
     $ pip install robovision
 
 
 You can also clone the repo and install locally:
 
-.. code-block:: shell
+.. code-block::
 
     $ git clone https://github.com/skypanther/robovision.git
     $ cd robovision
@@ -63,7 +63,8 @@ Python 2.x is **not** supported.
 Example
 -------
 
-.. code-block:: python
+.. code-block::
+
     import cv2
     import robovision as rv
 
