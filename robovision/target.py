@@ -1,10 +1,10 @@
 """
-
 Determine target characteristics
 
-
-
-
+Author: Tim Poulsen
+Web site: https://timpoulsen.com
+Copyright 2018, Tim Poulsen, all rights reserved
+License: MIT
 """
 import cv2
 import math
@@ -17,34 +17,37 @@ def _noop():
 
 class Target():
     def __init__(self):
-        pass
+        self.kernelOpen = np.ones((5, 5))  # for drawing the "open" mask
+        self.kernelClose = np.ones((20, 20))  # for draing the "closed" mask
 
     def set_color_range(self, lower=(100, 100, 100), upper=(255, 255, 255)):
         self.lower = lower
         self.upper = upper
 
-    @staticmethod
-    def get_countours(image=None, thresh_lower=127, thresh_upper=255):
-        if image is None:
-            return []
-        img = image.copy()
-        if len(img.shape) == 3:
-            # a grayscale image will return a 2-tuple, not a 3-tuple
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        _, thresh = cv2.threshold(img, thresh_lower, thresh_upper, cv2.THRESH_BINARY)
-        # get the countours (only outermost/external, no nested contours)
-        _, cnts, _ = cv2.findContours(thresh,
-                                      cv2.RETR_EXTERNAL,
-                                      cv2.CHAIN_APPROX_SIMPLE)
-        # sort by area, largest to smallest
-        cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
-        return cnts
+    def get_contours(self, image, mode=cv2.RETR_EXTERNAL):
+        '''
+        Detect and return contours surrounding colors between the lower
+        and upper bounds.
+        :param image: full frame image containing the mirror
+        :param mode: contour selection mode, see https://docs.opencv.org/3.4/d3/dc0/group__imgproc__shape.html#ga819779b9857cc2f8601e6526a3a5bc71
+        :return: Sorted list of countours, largest first
+        '''
+        imgHSV = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(imgHSV, self.lower_bound, self.upper_bound)
+        # remove noise with morphological "open"
+        maskOpen = cv2.morphologyEx(mask, cv2.MORPH_OPEN, self.kernelOpen)
+        # close up internal holes in contours with "close"
+        maskClose = cv2.morphologyEx(maskOpen, cv2.MORPH_CLOSE, self.kernelClose)
+        _, contours, _ = cv2.findContours(maskClose, mode, cv2.CHAIN_APPROX_SIMPLE)
+        return sorted(contours, key=cv2.contourArea, reverse=True)
 
     @staticmethod
     def get_rectangle(for_contour=None):
         """
         Returns the bounding rectangle for a contour, without
         considering the rotation of the enclosed object.
+        :param for_contour: a CV2 contour (e.g. returned from get_contours)
+        :return: Tuple of top-left corner coords and width, height
         """
         if for_contour is None:
             return None, None, None, None
@@ -56,22 +59,24 @@ class Target():
         """
         Returns the box points for a rotated rectangle that
         encloses an object contained within the contour.
+        :param for_contour: a CV2 contour (e.g. returned from get_contours)
+        :return: box points
         """
         if for_contour is None:
             return None
         rect = cv2.minAreaRect(for_contour)
         box = cv2.boxPoints(rect)
-        box = np.int0(box)
-        return box
+        return np.int0(box)
 
     @staticmethod
     def get_skew_angle(for_contour=None):
         """
         Returns the angle in degrees at which a contour is canted
-
-        An alternate technique according to the OpenCV docs would be
-        (x,y),(MA,ma),angle = cv.fitEllipse(cnt)
+        :param for_contour: a CV2 contour (e.g. returned from get_contours)
+        :return: angle, in degrees
         """
+        # An alternate technique according to the OpenCV docs would be
+        # (x,y),(MA,ma),angle = cv.fitEllipse(cnt)
         if for_contour is None:
             return None
         # get the min rotated bounding rect of the largest one
@@ -87,6 +92,11 @@ class Target():
 
     @staticmethod
     def get_extreme_points(for_contour=None):
+        """
+        Get the leftmost, topmost, etc points of a contour
+        :param for_contour: a CV2 contour (e.g. returned from get_contours)
+        :return: leftmost, rightmost, topmost, bottommost coordinates
+        """
         if for_contour is None:
             return None, None, None, None
         leftmost = tuple(for_contour[for_contour[:, :, 0].argmin()][0])
@@ -97,6 +107,13 @@ class Target():
 
     @staticmethod
     def do_shapes_match(contour_1=None, contour_2=None, tolerance=0.1):
+        """
+        Determines if shapes match, ignoring rotation and scaling
+        :param contour_1: a CV2 contour (e.g. returned from get_contours)
+        :param contour_2: a CV2 contour (e.g. returned from get_contours)
+        :param tolerance: float, tolerance factor
+        :return: boolean
+        """
         if contour_1 is None or contour_2 is None:
             return False
         diff = cv2.matchShapes(contour_1, contour_2, 1, 0.0)

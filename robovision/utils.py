@@ -14,7 +14,7 @@ import pickle
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 
 
-def resize_proportionally(image, width=None, height=None):
+def resize(image, width=None, height=None):
     """
     Resize an image while maintaining its aspect ratio; specify either
     target width or height of the image (with width taking precedence).
@@ -37,7 +37,7 @@ def resize_proportionally(image, width=None, height=None):
     return cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
 
 
-def resize(image, width=None, height=None):
+def resize_raw(image, width=None, height=None):
     """
     Resize an image ignoring aspect ratio; specifying either a target
     width or height (width takes precedence). Results in a square image
@@ -54,8 +54,10 @@ def resize(image, width=None, height=None):
         return image
     if width is None:
         dim = (height, height)
-    else:
+    elif height is None:
         dim = (width, width)
+    else:
+        dim = (height, width)
     return cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
 
 
