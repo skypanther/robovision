@@ -11,3 +11,4 @@ from .utils import flatten
 from .video_stream import VideoStream
 
 from .preprocessor import Preprocessor
+from .target import Target

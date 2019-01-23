@@ -2,7 +2,7 @@ from setuptools import setup
 from codecs import open
 from os import path
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 here = path.abspath(path.dirname(__file__))
 
@@ -24,7 +24,7 @@ setup(
         'Programming Language :: Python :: 3',
     ],
     keywords=['robot', 'first robotics', 'frc', 'computer vision', 'image processing', 'opencv'],
-    packages=['robovision'],
+    packages=['robovision', 'robovision.video'],
     include_package_data=True,
     author='Tim Poulsen',
     author_email='tim@skypanther.com'
