@@ -33,7 +33,7 @@ class Target():
         :return: Sorted list of countours, largest first
         '''
         imgHSV = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(imgHSV, self.lower_bound, self.upper_bound)
+        mask = cv2.inRange(imgHSV, self.lower, self.upper)
         # remove noise with morphological "open"
         maskOpen = cv2.morphologyEx(mask, cv2.MORPH_OPEN, self.kernelOpen)
         # close up internal holes in contours with "close"
@@ -56,6 +56,22 @@ class Target():
 
     @staticmethod
     def get_rotated_rectangle(for_contour=None):
+        """
+        Returns the rotated rectangle that encloses the provided contour.
+
+        Note: the returned value is a 3-tuple of these values:
+            [0] - x,y coordinates of the rectangle's center
+            [1] - height, width of the rectangle
+            [2] - rotation angle, if width < height add 90 to get "true" rotation
+        :param for_contour: a CV2 contour (e.g. returned from get_contours)
+        :return: cv2::minAreaRect
+        """
+        if for_contour is None:
+            return None
+        return cv2.minAreaRect(for_contour)
+
+    @staticmethod
+    def get_rotated_rectangle_as_boxpoints(for_contour=None):
         """
         Returns the box points for a rotated rectangle that
         encloses an object contained within the contour.

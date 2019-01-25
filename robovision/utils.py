@@ -10,8 +10,22 @@ TODO: Add color extraction functions: average, dominant, top-five, etc colors
 """
 import cv2
 import pickle
+import robovision as rv
 
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+
+
+def get_video_stream(source):
+    vs = None
+    try:
+        webcam = int(source)
+        vs = rv.VideoStream(source="webcam", cam_id=webcam)
+    except ValueError:
+        if source == "picam":
+            vs = rv.VideoStream(source="picam")
+        elif type(source) is str and source.startswith("http"):
+            vs = rv.VideoStream(source="ipcam", ipcam_url=source)
+    return vs
 
 
 def resize(image, width=None, height=None):

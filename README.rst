@@ -8,7 +8,7 @@ License: MIT
 
 Author: Tim Poulsen, mentor for Team 1518 Raider Robotics
 
-Version 0.1.2 (rather alpha quality)
+Version 0.1.3 (alpha)
 
 Overview
 --------
@@ -108,4 +108,4 @@ License
 
 MIT License
 
-Copyright (c) 2018, Tim Poulsen, All rights reserved.
+Copyright (c) 2019, Tim Poulsen, All rights reserved.
