@@ -24,13 +24,18 @@ class Target():
         self.lower = lower
         self.upper = upper
 
-    def get_contours(self, image, mode=cv2.RETR_EXTERNAL):
+    def get_contours(self, image, mode=cv2.RETR_EXTERNAL, sort_method="none"):
         '''
         Detect and return contours surrounding colors between the lower
         and upper bounds.
         :param image: full frame image containing the mirror
-        :param mode: contour selection mode, see https://docs.opencv.org/3.4/d3/dc0/group__imgproc__shape.html#ga819779b9857cc2f8601e6526a3a5bc71
+        :param mode: contour selection mode, see https://tinyurl.com/y8gx3w6w
+        :param sort_method: options for sorting the contours
         :return: Sorted list of countours, largest first
+
+        Contour sorting options: none, area (largest to smallest), area_asc (area
+        smallest to largest), left-to-right, right-to-left, top-to-bottom, and
+        bottom-to-top
         '''
         imgHSV = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(imgHSV, self.lower, self.upper)
@@ -39,7 +44,14 @@ class Target():
         # close up internal holes in contours with "close"
         maskClose = cv2.morphologyEx(maskOpen, cv2.MORPH_CLOSE, self.kernelClose)
         _, contours, _ = cv2.findContours(maskClose, mode, cv2.CHAIN_APPROX_SIMPLE)
-        return sorted(contours, key=cv2.contourArea, reverse=True)
+        if sort_method == "none":
+            return contours
+        elif sort_method == "area":
+            return sorted(contours, key=cv2.contourArea, reverse=True)
+        elif sort_method == "area_asc":
+            return sorted(contours, key=cv2.contourArea, reverse=False)
+        else:
+            return self.sort_contours(contours, method=sort_method)
 
     @staticmethod
     def get_rectangle(for_contour=None):
@@ -134,3 +146,17 @@ class Target():
             return False
         diff = cv2.matchShapes(contour_1, contour_2, 1, 0.0)
         return math.isclose(0, diff, abs_tol=tolerance)
+
+    @staticmethod
+    def sort_contours(contours, method="left-to-right"):
+        reverse = False
+        i = 0
+        if method == "right-to-left" or method == "bottom-to-top":
+            reverse = True
+        if method == "top-bottom" or method == "bottom-to-top":
+            i = 1
+        bounding_boxes = [cv2.boundingRect(c) for c in contours]
+        (contours, boundingBoxes) = zip(*sorted(zip(contours, bounding_boxes),
+                                                key=lambda b: b[1][i],
+                                                reverse=reverse))
+        return contours, bounding_boxes
