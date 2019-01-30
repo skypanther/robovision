@@ -85,8 +85,7 @@ def main():
             camera_params.mtx = cam_matrix
             camera_params.dist = dist_coeff
             camera_params.img_size = (width, height)
-            camera_params.newcameramtx = cam_matrix
-            camera_params.mean_accuracy = 1.0
+            print_camera_params(cam_matrix, dist_coeff)
             param_file_name = os.path.join(os.path.expanduser("~"), "params.pickle")
             with open(param_file_name, "wb") as param_file:
                 pickle.dump(camera_params, param_file)
@@ -144,6 +143,25 @@ def de_barrel(image):
     cv2.imshow("De-warped", rv.resize(dewarped, height=480))
 
 
+def print_camera_params(mtx, dist):
+    print("Copy and paste this code into your file:\n")
+    print("dist_coeff = np.zeros((4, 1), np.float64)")
+    print("dist_coeff[0, 0] = {}".format(dist[0, 0]))
+    print("dist_coeff[1, 0] = {}".format(dist[1, 0]))
+    print("dist_coeff[2, 0] = {}".format(dist[2, 0]))
+    print("dist_coeff[3, 0] = {}".format(dist[4, 0]))
+    print(" ")
+    print("cam_matrix = np.eye(3, dtype=np.float32)")
+    print("cam_matrix[0, 2] = {}".format(mtx[0, 2]))
+    print("cam_matrix[1, 2] = {}".format(mtx[1, 2]))
+    print("cam_matrix[1, 2] = {}".format(mtx[1, 2]))
+    print("cam_matrix[1, 1] = {}".format(mtx[1, 1]))
+    print(" ")
+    print("Then, call flatten with:")
+    print("frame = video_stream.read_frame()")
+    print("frame = robovision.flatten(frame, cam_matrix, dist_coeff)\n")
+
+
 def print_help():
     print(textwrap.dedent('''\
         Calculate lens characteristics manually
@@ -158,8 +176,8 @@ def print_help():
 
         Examples:
         python3 manual_lens_calibration.py -s 0
-        python3 manual_lens_calibration.py -s picam 
-        python3 manual_lens_calibration.py -s http://10.15.18.100/mjpg/video.mjpg 
+        python3 manual_lens_calibration.py -s picam
+        python3 manual_lens_calibration.py -s http://10.15.18.100/mjpg/video.mjpg
 
         Use this script to determine lens characteristics for removing distortions
         when the auto_calibrate script fails to properly detect those parameters.

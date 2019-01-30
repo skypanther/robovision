@@ -11,10 +11,6 @@ import math
 import numpy as np
 
 
-def _noop():
-    pass
-
-
 class Target():
     def __init__(self):
         self.kernelOpen = np.ones((5, 5))  # for drawing the "open" mask
@@ -156,7 +152,7 @@ class Target():
         if method == "top-bottom" or method == "bottom-to-top":
             i = 1
         bounding_boxes = [cv2.boundingRect(c) for c in contours]
-        (contours, boundingBoxes) = zip(*sorted(zip(contours, bounding_boxes),
-                                                key=lambda b: b[1][i],
-                                                reverse=reverse))
+        contours, boundingBoxes = zip(*sorted(zip(contours, bounding_boxes),
+                                              key=lambda b: b[1][i],
+                                              reverse=reverse))
         return contours, bounding_boxes

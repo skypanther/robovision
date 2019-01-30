@@ -235,21 +235,33 @@ def calibrate(dirname, min_images, preview):
         error = cv2.norm(imgpoints[i], imgpoints2, cv2.NORM_L2) / len(imgpoints2)
         total_error += error
 
-    mean_accuracy = 100 - (100 * (total_error / len(objpoints)))
-    print('Mean accuracy: {}'.format(mean_accuracy))
+    print("Copy and paste this code into your file:\n")
+    print("dist_coeff = np.zeros((4, 1), np.float64)")
+    print("dist_coeff[0, 0] = {}".format(dist[0, 0]))
+    print("dist_coeff[1, 0] = {}".format(dist[1, 0]))
+    print("dist_coeff[2, 0] = {}".format(dist[2, 0]))
+    print("dist_coeff[3, 0] = {}".format(dist[4, 0]))
+    print(" ")
+    print("cam_matrix = np.eye(3, dtype=np.float32)")
+    print("cam_matrix[0, 2] = {}".format(mtx[0, 2]))
+    print("cam_matrix[1, 2] = {}".format(mtx[1, 2]))
+    print("cam_matrix[1, 2] = {}".format(mtx[1, 2]))
+    print("cam_matrix[1, 1] = {}".format(mtx[1, 1]))
+    print(" ")
+    print("Then, call flatten with:")
+    print("frame = video_stream.read_frame()")
+    print("frame = robovision.flatten(frame, cam_matrix, dist_coeff)\n")
 
     # Save the params for future re-use
     camera_params = Object()
     camera_params.mtx = mtx
     camera_params.dist = dist
     camera_params.img_size = (w, h)
-    camera_params.newcameramtx = newcameramtx
-    camera_params.mean_accuracy = mean_accuracy
 
     param_file_name = os.path.join(dirname, 'params.pickle')
     with open(param_file_name, 'wb') as param_file:
         pickle.dump(camera_params, param_file)
-        print('Camera params saved to {}'.format(param_file_name))
+        print('Camera params also saved to {}'.format(param_file_name))
 
 
 if __name__ == '__main__':

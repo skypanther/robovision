@@ -163,24 +163,24 @@ def load_camera_params(params_file):
     return None
 
 
-def flatten(image, camera_params):
+def flatten(image, cam_matrix, dist_coeff):
     '''
-    Removes lens distortions using the camera/lens parameters cached
-    in the instanc
+    Removes lens distortions using the camera/lens parameters and
+    distortion coefficients
 
     :param image: OpenCV BGR image to flatten
     :return: Undistorted BGR image
     '''
     h, w = image.shape[:2]
-    newcameramtx, roi = \
-        cv2.getOptimalNewCameraMatrix(camera_params.mtx,
-                                      camera_params.dist,
+    newcameramtx, _ = \
+        cv2.getOptimalNewCameraMatrix(cam_matrix,
+                                      dist_coeff,
                                       (w, h),
                                       1,
                                       (w, h))
     return cv2.undistort(image,
-                         camera_params.mtx,
-                         camera_params.dist,
+                         cam_matrix,
+                         dist_coeff,
                          None,
                          newcameramtx)
 
