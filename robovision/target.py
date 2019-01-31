@@ -130,6 +130,22 @@ class Target():
         return leftmost, rightmost, topmost, bottommost
 
     @staticmethod
+    def get_solidity(for_contour=None):
+        """
+        Returns the solidity for a contour. Solidity is the ratio of contour
+        area to its convex hull area. A ratio close to 1 means that the
+        contour is generally contiguous and regularly shaped.
+
+        :param for_contour: a CV2 contour (e.g. returned from get_contours)
+        :return: Float value, ratio of area to hull area
+        """
+        area = cv2.contourArea(for_contour)
+        hull = cv2.convexHull(for_contour)
+        hull_area = cv2.contourArea(hull)
+        solidity = float(area) / hull_area
+        return solidity
+
+    @staticmethod
     def do_shapes_match(contour_1=None, contour_2=None, tolerance=0.1):
         """
         Determines if shapes match, ignoring rotation and scaling
