@@ -79,13 +79,17 @@ def main():
         if key == 27 or key == ord("q"):
             cv2.destroyAllWindows()
             exit()
+        if key == ord("p"):
+            # print the params as text for copying into a script
+            print_camera_params(cam_matrix, dist_coeff)
+            cv2.destroyAllWindows()
+            exit()
         if key == ord("s"):
             # Save the params to a pickle file
             camera_params = Object()
             camera_params.mtx = cam_matrix
             camera_params.dist = dist_coeff
             camera_params.img_size = (width, height)
-            print_camera_params(cam_matrix, dist_coeff)
             param_file_name = os.path.join(os.path.expanduser("~"), "params.pickle")
             with open(param_file_name, "wb") as param_file:
                 pickle.dump(camera_params, param_file)
@@ -149,7 +153,7 @@ def print_camera_params(mtx, dist):
     print("dist_coeff[0, 0] = {}".format(dist[0, 0]))
     print("dist_coeff[1, 0] = {}".format(dist[1, 0]))
     print("dist_coeff[2, 0] = {}".format(dist[2, 0]))
-    print("dist_coeff[3, 0] = {}".format(dist[4, 0]))
+    print("dist_coeff[3, 0] = {}".format(dist[3, 0]))
     print(" ")
     print("cam_matrix = np.eye(3, dtype=np.float32)")
     print("cam_matrix[0, 2] = {}".format(mtx[0, 2]))
@@ -184,6 +188,9 @@ def print_help():
 
         When you're satisfied with the dewarping, press "S" while one of the preview
         windows is active to save your lens parameters to a pickle file.
+
+        Or, press "P" to print the lens parameters as code you can copy and paste
+        into your script.
         '''))
 
 

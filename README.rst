@@ -8,7 +8,7 @@ License: MIT
 
 Author: Tim Poulsen, mentor for Team 1518 Raider Robotics
 
-Version 0.1.3 (alpha)
+Version 0.1.4 (alpha)
 
 Overview
 --------
@@ -22,8 +22,9 @@ Some of the functions included:
 * Retroreflective target identification, contour finding, and geometry finding functions
 * Image resizing, equalization, brightness and contrast adjustments, and more
 * A preprocessor class, which enables you to set up a pipeline of functions that will be applied in series to an image.
+* Overlay arrows, text, borders, or crosshairs on images
 
-The autocalibrate script is a camera calibration utility, which uses the OpenCV chessboard technique to determine lens parameters to be used for dewarping operations.
+The autocalibrate script is a camera calibration utility, which uses the OpenCV chessboard technique to determine lens parameters to be used for dewarping operations. If you prefer, there's a manual_lens_calibration.py script that lets you adjust the various lens parameters until the image is visually correct.
 
 Installation / Usage
 --------------------
