@@ -4,11 +4,15 @@ Robovision
 
 Vision processing scripts useful for FIRST robotics teams and probably other purposes.
 
-License: MIT
+.. image:: https://img.shields.io/badge/license-MIT-green.svg
+.. image:: https://img.shields.io/badge/Python-3.5%2B-blue.svg
+.. image:: https://img.shields.io/badge/OpenCV-3.4%2B-blue.svg
+
+| |version|
+
+.. |version| image:: https://img.shields.io/badge/Version-0.1.4-orange.svg
 
 Author: Tim Poulsen, mentor for Team 1518 Raider Robotics
-
-Version 0.1.4 (alpha)
 
 Overview
 --------
@@ -98,6 +102,7 @@ Example
             break
 
 
+See the `wiki <https://github.com/skypanther/robovision/wiki>`_ for more information.
 
 Contributing
 ------------
