@@ -4,11 +4,13 @@ Robovision
 
 Vision processing scripts useful for FIRST robotics teams and probably other purposes.
 
-.. image:: https://img.shields.io/badge/license-MIT-green.svg
-.. image:: https://img.shields.io/badge/Python-3.5%2B-blue.svg
-.. image:: https://img.shields.io/badge/OpenCV-3.4%2B-blue.svg
+|licence| |pythonver| |opencvver|
 
-| |version|
+.. |licence| image:: https://img.shields.io/badge/license-MIT-green.svg
+.. |pythonver| image:: https://img.shields.io/badge/Python-3.5%2B-blue.svg
+.. |opencvver| image:: https://img.shields.io/badge/OpenCV-3.4%2B-blue.svg
+
+|version|
 
 .. |version| image:: https://img.shields.io/badge/Version-0.1.4-orange.svg
 
