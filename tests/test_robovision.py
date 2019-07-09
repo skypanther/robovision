@@ -21,11 +21,11 @@ def test_resize():
     assert sh == 100
 
 
-def resize_proportionally():
+def test_resize_proportionally():
     small_kitten = rv.resize_proportionally(kitten, width=100)
     sh, sw = small_kitten.shape[:2]
     ratio = w / sw
-    test_height = h * ratio
+    test_height = h / ratio
     assert sw == 100
     assert sh == test_height
 
