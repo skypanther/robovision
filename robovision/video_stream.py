@@ -18,6 +18,11 @@ while some_condition is True:
     # do stuff with the frame
 vs_webcam.stop()
 
+Author: Tim Poulsen
+Web site: https://timpoulsen.com
+Copyright 2018, Tim Poulsen, all rights reserved
+License: MIT
+
 """
 import sys
 
@@ -79,5 +84,5 @@ class VideoStream:
         if not self.source.running:
             self.source.start()
         if self.preprocessor is not None:
-            return self.preprocessor(self.source.read_frame)
+            return self.preprocessor.preprocess(self.source.read_frame)
         return self.source.read_frame()

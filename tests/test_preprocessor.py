@@ -18,7 +18,7 @@ def test_set_size():
     assert pp.image_size == 100
 
 
-def test_processor_length():
+def test_preprocessor_list_is_empty():
     pp.set_image_size(100)
     assert len(pp.processors) == 0
 
@@ -30,8 +30,8 @@ def test_processed_image():
     assert h == 100
 
 
-def test_processor_length_2():
-    kitty = rv.resize(kitten, width=100)
+def test_preprocessor():
+    kitty = rv.resize_raw(kitten, width=100)
     foo = MagicMock(return_value=kitty)
     pp.add_processor(foo)
     img = pp.preprocess(kitty)

@@ -3,8 +3,9 @@
 1. Takes a still image every X seconds. Prompts you with a countdown between each.
 2. From the resulting images, selects N images, checking each in turn that it shows
    the checkboard.
-3. From that set of stills, it calculates camera parameters and saves them to a
-   pickled object for later use in undistortion operations.
+3. From that set of stills, it calculates camera parameters. It prints these to the console
+   in a form that you can copy & paste into your code. It also saves them to a pickled object
+   for later use in undistortion operations.
 4. Optionally, shows a preview of unwarping a random calibration photo using the
    calculated lens parameters
 
@@ -46,17 +47,23 @@ That class implements basically the following code:
 
 ```python
 import pickle
-camera_params = pickle.load(open('filename', "rb"))
+import robovision as rv
 
-# camera_params will be a dict with keys: mtx, dist, newcameramtx,
-# mean_accuracy which you will feed to the cv2 functions
+# You'll need this "object" class in order to de-pickle the camera
+# parameters file
+class Object(object):
+    pass
 
-def flatten(img, params):
-    h, w = img.shape[:2]
-    newcameramtx, roi = cv2.getOptimalNewCameraMatrix(params['mtx'], params['dist'], (w, h), 1, (w, h))
-    return cv2.undistort(img, params['mtx'], params['dist'], None, newcameramtx)
+vs = rv.VideoStream(source="webcam", cam_id=0)
 
-orig = cv2.imread('myimage.jpg')
-flattened = flatten(orig, camera_params)
+# camera_params will be a dict with keys: mtx, dist, img_size,
+# which you will feed to the Robovision flatten function
+camera_params = rv.load_camera_params('params.pickle')
+
+frame = vs.read_frame()
+cv2.imshow("Original", frame)
+frame = rv.flatten(frame, camera_params.mtx, camera_params.dist)
+cv2.imshow("Flattened", frame)
+cv2.waitKey(0)
 
 ```

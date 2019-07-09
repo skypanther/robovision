@@ -10,11 +10,25 @@ TODO: Add color extraction functions: average, dominant, top-five, etc colors
 """
 import cv2
 import pickle
+import robovision as rv
 
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 
 
-def resize_proportionally(image, width=None, height=None):
+def get_video_stream(source):
+    vs = None
+    try:
+        webcam = int(source)
+        vs = rv.VideoStream(source="webcam", cam_id=webcam)
+    except ValueError:
+        if source == "picam":
+            vs = rv.VideoStream(source="picam")
+        elif type(source) is str and source.startswith("http"):
+            vs = rv.VideoStream(source="ipcam", ipcam_url=source)
+    return vs
+
+
+def resize(image, width=None, height=None):
     """
     Resize an image while maintaining its aspect ratio; specify either
     target width or height of the image (with width taking precedence).
@@ -37,7 +51,7 @@ def resize_proportionally(image, width=None, height=None):
     return cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
 
 
-def resize(image, width=None, height=None):
+def resize_raw(image, width=None, height=None):
     """
     Resize an image ignoring aspect ratio; specifying either a target
     width or height (width takes precedence). Results in a square image
@@ -54,8 +68,10 @@ def resize(image, width=None, height=None):
         return image
     if width is None:
         dim = (height, height)
-    else:
+    elif height is None:
         dim = (width, width)
+    else:
+        dim = (height, width)
     return cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
 
 
@@ -147,24 +163,24 @@ def load_camera_params(params_file):
     return None
 
 
-def flatten(image, camera_params):
+def flatten(image, cam_matrix, dist_coeff):
     '''
-    Removes lens distortions using the camera/lens parameters cached
-    in the instanc
+    Removes lens distortions using the camera/lens parameters and
+    distortion coefficients
 
     :param image: OpenCV BGR image to flatten
     :return: Undistorted BGR image
     '''
     h, w = image.shape[:2]
-    newcameramtx, roi = \
-        cv2.getOptimalNewCameraMatrix(camera_params.mtx,
-                                      camera_params.dist,
+    newcameramtx, _ = \
+        cv2.getOptimalNewCameraMatrix(cam_matrix,
+                                      dist_coeff,
                                       (w, h),
                                       1,
                                       (w, h))
     return cv2.undistort(image,
-                         camera_params.mtx,
-                         camera_params.dist,
+                         cam_matrix,
+                         dist_coeff,
                          None,
                          newcameramtx)
 

@@ -2,12 +2,12 @@ from setuptools import setup
 from codecs import open
 from os import path
 
-__version__ = '0.0.1'
+__version__ = '0.1.4'
 
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
@@ -24,7 +24,7 @@ setup(
         'Programming Language :: Python :: 3',
     ],
     keywords=['robot', 'first robotics', 'frc', 'computer vision', 'image processing', 'opencv'],
-    packages=['robovision'],
+    packages=['robovision', 'robovision.video'],
     include_package_data=True,
     author='Tim Poulsen',
     author_email='tim@skypanther.com'

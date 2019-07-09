@@ -17,17 +17,17 @@ bw = cv2.imread('tests/bw.png', 0)
 def test_resize():
     small_kitten = rv.resize(kitten, width=100)
     sh, sw = small_kitten.shape[:2]
-    assert sw == 100
-    assert sh == 100
-
-
-def test_resize_proportionally():
-    small_kitten = rv.resize_proportionally(kitten, width=100)
-    sh, sw = small_kitten.shape[:2]
     ratio = w / sw
     test_height = h / ratio
     assert sw == 100
     assert sh == test_height
+
+
+def test_resize_raw():
+    small_kitten = rv.resize_raw(kitten, width=100)
+    sh, sw = small_kitten.shape[:2]
+    assert sw == 100
+    assert sh == 100
 
 
 def test_contrast():
